@@ -27,8 +27,6 @@ const Proportion = ({
             <Radio.Group value={type} onChange={handleChangeType}>
               <Radio.Button value="usdt">USDT</Radio.Button>
               <Radio.Button value="btc">BTC</Radio.Button>
-              <Radio.Button value="ttc">TTC</Radio.Button>
-              <Radio.Button value="point">积分</Radio.Button>
             </Radio.Group>
           </div>
         </div>

@@ -1,0 +1,23 @@
+export default {
+  'contract.title': '合约',
+  'contract(s)': '合约',
+  'contract.field.name': '合约名称',
+  'contract.field.coin_type': '币种类型',
+  'contract.field.period': '期数',
+  'contract.field.summary': '简介',
+  'contract.field.total': '总数量',
+  'contract.field.sold': '已卖出数量',
+  'contract.field.dividend_ratio': '分红比例',
+  'contract.field.dividend_status': '分红状态',
+  'contract.field.price': '价格',
+  'contract.field.sale_time_bgn': '起卖时间',
+  'contract.field.sale_time_end': '止卖时间',
+
+  'contract.password.change': '修改密码',
+  'contract.password.update': '更新用户密码',
+  'contract.password.oldPassword': '用户原密码',
+  'contract.password.newPassword': '用户新密码',
+  'contract.password.confirmPassword': '确认新密码',
+  'contract.password.desc': 'Make sure it\'s at least 15 characters OR at least 8 characters including a number and a lowercase letter.',
+  'contract.password.notMatch': '新密码与确认密码不一致',
+};

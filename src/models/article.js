@@ -17,10 +17,8 @@ const Model = {
       const { response, data } = yield call(query, payload);
       if (response.status === 200) {
         for (let contract of data.list) {
-          contract.sale_percent = (contract.sale_count / contract.total) * 100;
+          contract.sale_percent = (contract.sold / contract.total) * 100;
           contract.sale_percent.toFixed(2);
-          contract.sale_time_bgn = moment(contract.sale_time_bgn * 1000);
-          contract.sale_time_end = moment(contract.sale_time_end * 1000);
         }
         yield put({
           type: 'save',

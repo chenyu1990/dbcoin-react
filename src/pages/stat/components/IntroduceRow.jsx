@@ -79,26 +79,6 @@ const IntroduceRow = ({
               {(expend.usdt_count - expendFromAdmin.usdt).toFixed(2)}
             </Tooltip>
           </Col>
-          <Col span={16}>
-            <Tooltip title={expend.ttc_count.toFixed(8)}>
-              TTC： {expend.ttc_count.toFixed(2)}
-            </Tooltip>
-          </Col>
-          <Col span={8}>
-            <Tooltip title={(expend.ttc_count - expendFromAdmin.ttc).toFixed(8)}>
-              {(expend.ttc_count - expendFromAdmin.ttc).toFixed(2)}
-            </Tooltip>
-          </Col>
-          <Col span={16}>
-            <Tooltip title={expend.point_count.toFixed(8)}>
-              积分： {expend.point_count.toFixed(2)}
-            </Tooltip>
-          </Col>
-          <Col span={8}>
-            <Tooltip title={(expend.point_count - expendFromAdmin.point).toFixed(8)}>
-              {(expend.point_count - expendFromAdmin.point).toFixed(2)}
-            </Tooltip>
-          </Col>
         </Row>
       </ChartCard>
     </Col>

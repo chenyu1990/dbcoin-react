@@ -11,14 +11,15 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-const earnType = [
+const type = [
   '未知状态',
   '购买合约收益',
   '推荐收益',
-  '推荐级差收益',
-  '充值',
-  '持有合约收益(持币分红)',
-  '矿机收益',
+  '转入/充值',
+  '管理员',
+  '给系统交手续费',
+  '转出/提现',
+  '合约收益',
 ];
 
 /* eslint react/no-multi-comp:0 */
@@ -99,20 +100,6 @@ class TableList extends Component {
       title: 'USDT发生额',
       dataIndex: 'usdt',
       render: val => val.toFixed(8)
-    },
-    {
-      title: 'BTC发生额',
-      dataIndex: 'btc',
-      render: val => val.toFixed(8)
-    },
-    {
-      title: 'TTC发生额',
-      dataIndex: 'ttc',
-      render: val => val.toFixed(8)
-    },
-    {
-      title: '积分',
-      dataIndex: 'point',
     },
     {
       title: '备注',

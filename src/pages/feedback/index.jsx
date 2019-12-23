@@ -67,7 +67,7 @@ class TableList extends Component {
     {
       title: '反馈时间',
       dataIndex: 'created_at',
-      render: val => <span>{moment(val * 1000).format('YYYY-MM-DD HH:mm:ss')}</span>,
+      render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '审核状态',

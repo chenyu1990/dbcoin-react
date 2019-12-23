@@ -21,22 +21,11 @@ const initState = {
     usdt: 0,
   },
   expend: {
-    machine_btc: 0,
-    hold_contract_usdt: 0,
-    buy_contract_ttc: 0,
-    buy_contract_point: 0,
     recommend_usdt: 0,
-    recommend_ttc: 0,
-    diff_level_usdt: 0,
-    diff_level_ttc: 0,
     admin_usdt: 0,
     admin_btc: 0,
-    admin_ttc: 0,
-    admin_point: 0,
     btc_count: 0,
-    ttc_count: 0,
     usdt_count: 0,
-    point_count: 0,
   },
 };
 

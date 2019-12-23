@@ -39,16 +39,6 @@ const PointForm = props => {
       label: 'BTC',
       precision: 8,
     },
-    {
-      field: 'ttc',
-      label: 'TTC',
-      precision: 8,
-    },
-    {
-      field: 'point',
-      label: '积分',
-      precision: 0,
-    },
   ];
 
   const memo = {

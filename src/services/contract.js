@@ -14,11 +14,15 @@ export async function remove(params) {
   });
 }
 
-export async function add(params) {
+export async function create(params) {
   return request(API.CONTRACT.MAIN, {
     method: 'POST',
     data: params,
   });
+}
+
+export async function get(params) {
+  return request(`${API.CONTRACT.MAIN}/${params.contract_id}`);
 }
 
 export async function update(params) {

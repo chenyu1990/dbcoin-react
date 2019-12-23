@@ -23,6 +23,7 @@ export const LOGGER = `${ADMIN_URL}/v1/logger`;
 
 export const DATA = {
   ATTACHMENT: `${BASE_URL}/data/attachment`,
+  Contract: `${BASE_URL}/data/contract`,
 };
 
 export const SYSTEM = {

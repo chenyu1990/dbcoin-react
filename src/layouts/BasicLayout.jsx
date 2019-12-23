@@ -37,7 +37,7 @@ const menuDataRender = menuList =>
 
 const defaultFooterDom = (
   <DefaultFooter
-    copyright="2019 马蹬人力资源"
+    copyright="2019 DBCoin"
     links={[]}
   />
 );

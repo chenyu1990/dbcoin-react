@@ -9,14 +9,16 @@ import {
   message,
   Progress,
   Upload,
-  Tooltip,
+  Tooltip, Tag,
 } from 'antd';
 import React, { Component, Fragment } from 'react';
 import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import { connect } from 'dva';
-import CreateForm from './components/CreateForm';
 import StandardTable from './components/StandardTable';
-import UpdateForm from './components/UpdateForm';
+import { FormattedMessage } from 'umi-plugin-react/locale';
+
+import Editor from './components/Editor';
+
 import styles from './style.less';
 import store from '@/utils/store';
 import * as API from '@/api';
@@ -27,10 +29,11 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-const statusMap = ['error', 'processing', 'default', 'warning', 'error'];
-const status = ['未知状态', '正常', '售罄', '下架', '开始分红'];
-const machineStatusMap = ['default', 'processing', 'error'];
-const machineStatus = ['待运行', '正在运行', '停止运行'];
+const statusMap = ['error', 'processing', 'default'];
+const status = ['未知状态', '正常', '售罄'];
+
+const coinTypeColor = ['', '#179f76', '#f69736'];
+const coinType = ['', 'USDT(omni)', 'BTC'];
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ contract, loading }) => ({
@@ -39,21 +42,15 @@ const machineStatus = ['待运行', '正在运行', '停止运行'];
 }))
 class TableList extends Component {
   state = {
-    modalVisible: false,
-    updateModalVisible: false,
-    expandForm: false,
+    editModalVisible: false,
     selectedRows: [],
     formValues: {},
     stepFormValues: {},
   };
   columns = [
     {
-      title: 'id',
-      dataIndex: 'id',
-    },
-    {
       title: '图像',
-      dataIndex: 'thumb',
+      dataIndex: 'image',
       render: (val, record) => {
         const { token_type, access_token } = store.getAccessToken();
         return (
@@ -71,11 +68,11 @@ class TableList extends Component {
               width: 100,
               height: 100,
             }}
-            action={API.ATTACHMENT.MAIN}
+            action={`${API.CONTRACT.MAIN}/upload/${record.contract_id}`}
             onChange={obj => this.handleFileChange(obj, record)}
           >
             {val ? (
-              <img src={`${API.DATA.ATTACHMENT}/${val}`} alt="banner" style={{ width: '100%' }} />
+              <img src={`${API.DATA.Contract}/${val}`} alt="banner" style={{ width: '100%' }} />
             ) : (
               <Fragment>
                 <Icon type={record.loading ? 'loading' : 'plus'} />
@@ -96,25 +93,18 @@ class TableList extends Component {
       ),
     },
     {
-      title: '算力',
-      dataIndex: 'power',
-      align: 'right',
-      render: val => `${val} T/s`,
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-
+      title: '币类型',
+      dataIndex: 'coin_type',
       render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
+        return <Tag color={coinTypeColor[val]}>{coinType[val]}</Tag>;
       },
     },
     {
-      title: '矿机状态',
-      dataIndex: 'machine_status',
+      title: '分红状态',
+      dataIndex: 'dividend_status',
 
       render(val) {
-        return <Badge status={machineStatusMap[val]} text={machineStatus[val]} />;
+        return val === 1 ? '已分' : '';
       },
     },
     {
@@ -124,7 +114,7 @@ class TableList extends Component {
         <Progress
           percent={val ? val.toFixed(1) : 0}
           type="circle"
-          format={() => `${record.sale_count}/${record.total}`}
+          format={() => `${record.sold}/${record.total}`}
           width={100}
         />
       ),
@@ -142,11 +132,13 @@ class TableList extends Component {
     },
     {
       title: '操作',
-      render: (text, record) => (
-        <Fragment>
-          <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
-        </Fragment>
-      ),
+      render: (text, record) => {
+        return record.sold !== record.total ? (
+          <Fragment>
+            <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
+          </Fragment>
+        ) : null;
+      },
     },
   ];
 
@@ -157,6 +149,26 @@ class TableList extends Component {
     });
   }
 
+  fetch = (formValues, reset) => {
+    const { dispatch } = this.props;
+    let payload = {};
+    if (typeof reset === 'undefined' || reset !== true) {
+      const { pagination, formValues: oldFormValues } = this.state;
+      formValues = { ...oldFormValues, ...formValues };
+      payload = {
+        ...pagination,
+        ...formValues,
+      }
+    } else {
+      payload = formValues;
+    }
+    dispatch({
+      type: 'contract/fetch',
+      payload,
+      success: () => this.setState({ formValues, selectedRows: [] }),
+    });
+  };
+
   handleUpdateLoading = fields => {
     const { dispatch } = this.props;
     dispatch({
@@ -164,6 +176,7 @@ class TableList extends Component {
       payload: fields,
     });
   };
+
   handleFileChange = ({ file }, record) => {
     switch (file.status) {
       case 'error':
@@ -175,18 +188,12 @@ class TableList extends Component {
         break;
       case 'done':
         message.success(`${file.name} 上传成功`);
-        const {
-          response: { image, thumb },
-        } = file; // attachment 表的 image 字段，应该改为data字段
-        record.loading = false;
-        record.image = image;
-        record.thumb = thumb;
-        this.handleUpdate(record);
+        this.fetch();
         break;
     }
   };
+
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
-    const { dispatch } = this.props;
     const { formValues } = this.state;
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -204,52 +211,55 @@ class TableList extends Component {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
 
-    dispatch({
-      type: 'contract/fetch',
-      payload: params,
+    this.fetch(params);
+  };
+
+  handleEditModalVisible = flag => {
+    this.setState({
+      editModalVisible: !!flag,
     });
   };
 
-  handleModalVisible = flag => {
+  handleSelectRows = rows => {
     this.setState({
-      modalVisible: !!flag,
+      selectedRows: rows,
     });
-  };
-  handleUpdateModalVisible = (flag, record) => {
-    this.setState({
-      updateModalVisible: !!flag,
-      stepFormValues: record || {},
-    });
-  };
-  handleAdd = fields => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'contract/add',
-      payload: fields,
-    });
-    this.handleModalVisible();
-  };
-  handleUpdate = fields => {
-    const { dispatch } = this.props;
-    this.fixTypeof(fields);
-    dispatch({
-      type: 'contract/update',
-      payload: fields,
-    });
-    this.handleUpdateModalVisible();
   };
 
-  fixTypeof = fields => {
-    fields.id = Number(fields.id);
-    fields.total = Number(fields.total);
-    fields.sale_count = Number(fields.sale_count);
-    fields.power = Number(fields.power);
-    fields.usdt_fee = Number(fields.usdt_fee);
-    fields.got_point = Number(fields.got_point);
-    fields.got_ttc = Number(fields.got_ttc);
-    fields.status = Number(fields.status);
-    fields.machine_status = Number(fields.machine_status);
-    fields.sale_percent = Number(fields.sale_percent);
+  handleEdit = fields => {
+    const { formType } = this.state;
+    const { dispatch } = this.props;
+    dispatch({
+      type: formType === 'E' ? 'contract/update' : 'contract/add',
+      payload: fields,
+      success: () => {
+        this.fetch();
+        this.handleEditModalVisible();
+      },
+    });
+  };
+
+  handleEditClick = formType => {
+    if (formType === 'E') {
+      const { selectedRows } = this.state;
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'contract/get',
+        payload: selectedRows[0],
+        success: data => {
+          this.setState({
+            editModalVisible: true,
+            formType,
+            stepFormValues: data,
+          });
+        }
+      });
+    } else {
+      this.setState({
+        editModalVisible: true,
+        formType,
+      });
+    }
   };
 
   render() {
@@ -257,40 +267,42 @@ class TableList extends Component {
       contract: { data },
       loading,
     } = this.props;
-    const { modalVisible, updateModalVisible, stepFormValues } = this.state;
+    const { selectedRows, editModalVisible, formType, stepFormValues } = this.state;
     const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
-    };
-    const updateMethods = {
-      handleUpdateModalVisible: this.handleUpdateModalVisible,
-      handleUpdate: this.handleUpdate,
+      handleEdit: this.handleEdit,
+      handleEditModalVisible: this.handleEditModalVisible,
+      formType,
     };
     return (
       <PageHeaderWrapper>
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button icon="plus" type="primary" onClick={() => this.handleEditClick('A')}>
                 新建
               </Button>
+              {selectedRows.length > 0 && (
+                <React.Fragment>
+                  {selectedRows.length === 1 ?
+                    <Button onClick={() => this.handleEditClick('E')}>
+                      <Icon type='edit'/>
+                      <FormattedMessage id='component.operation.edit' />
+                    </Button> : null}
+                </React.Fragment>
+              )}
             </div>
             <StandardTable
+              selectedRows={selectedRows}
               loading={loading}
               data={data}
               columns={this.columns}
+              onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
-        {stepFormValues && Object.keys(stepFormValues).length ? (
-          <UpdateForm
-            {...updateMethods}
-            updateModalVisible={updateModalVisible}
-            values={stepFormValues}
-          />
-        ) : null}
+        <Editor {...parentMethods} editModalVisible={editModalVisible}
+                    values={stepFormValues}/>
       </PageHeaderWrapper>
     );
   }

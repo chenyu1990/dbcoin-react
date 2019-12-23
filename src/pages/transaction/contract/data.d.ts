@@ -7,8 +7,6 @@ export interface TableListItem {
   earn_type: number;
   usdt: number;
   btc: number;
-  ttc: number;
-  point: number;
   remark: string;
 }
 

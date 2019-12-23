@@ -9,7 +9,7 @@ export default {
   "menu": {
     "locale": true
   },
-  "title": "马蹬人力资源",
+  "title": "DBCoin",
   "pwa": false,
   "iconfontUrl": "",
   "collapse": true,

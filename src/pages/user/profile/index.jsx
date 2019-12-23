@@ -124,21 +124,11 @@ class TableList extends Component {
       },
     },
     {
-      title: '等级',
-      dataIndex: 'level',
-    },
-    {
       title: '钱包',
       render: (val, record) => {
         const title = `${record.real_name}的钱包信息`;
         const content = (
           <div>
-            <p>USDT钱包地址：{record.usdt_address}</p>
-            <p>BTC钱包地址：{record.btc_address}</p>
-            <p>持有USDT：{record.usdt.toFixed(8)}</p>
-            <p>持有BTC：{record.btc.toFixed(8)}</p>
-            <p>持有TTC：{record.ttc}</p>
-            <p>持有积分：{record.point}</p>
             <Button type="primary" onClick={() => this.handleModalVisible(true, record)}>
               积分调整
             </Button>
@@ -369,9 +359,7 @@ class TableList extends Component {
   handlePoint = fields => {
     const { dispatch } = this.props;
     fields.btc = fields.btc > 0 ? Number(Number(fields.btc).toFixed(8)) : 0;
-    fields.ttc = fields.ttc > 0 ? Number(Number(fields.ttc).toFixed(8)) : 0;
     fields.usdt = fields.usdt > 0 ? Number(Number(fields.usdt).toFixed(8)) : 0;
-    fields.point = fields.point > 0 ? Number(fields.point) : 0;
     dispatch({
       type: 'profile/point',
       payload: fields,
@@ -427,22 +415,6 @@ class TableList extends Component {
                   <Radio value={0}>全部</Radio>
                   <Radio value={1}>允许</Radio>
                   <Radio value={2}>禁止</Radio>
-                </Radio.Group>
-              )}
-            </Form.Item>
-          </Col>
-          <Col md={8} sm={24}>
-            <Form.Item label="等级">
-              {getFieldDecorator('level', {
-              })(
-                <Radio.Group>
-                  <Radio value={0}>全部</Radio>
-                  <Radio value={1}>一级</Radio>
-                  <Radio value={2}>二级</Radio>
-                  <Radio value={3}>三级</Radio>
-                  <Radio value={4}>四级</Radio>
-                  <Radio value={5}>五级</Radio>
-                  <Radio value={6}>六级</Radio>
                 </Radio.Group>
               )}
             </Form.Item>

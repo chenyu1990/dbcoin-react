@@ -66,18 +66,12 @@ const Model = {
           if (action.payload.action === 'increase') {
             item.usdt += action.payload.usdt;
             item.btc += action.payload.btc;
-            item.ttc += action.payload.ttc;
-            item.point += action.payload.point;
           } else if (action.payload.action === 'decrease') {
             item.usdt -= action.payload.usdt;
             item.btc -= action.payload.btc;
-            item.ttc -= action.payload.ttc;
-            item.point -= action.payload.point;
           } else if (action.payload.action === 'modify') {
             item.usdt = action.payload.usdt;
             item.btc = action.payload.btc;
-            item.ttc = action.payload.ttc;
-            item.point = action.payload.point;
           }
           return item;
         }

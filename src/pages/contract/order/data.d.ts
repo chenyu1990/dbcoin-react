@@ -2,16 +2,9 @@ export interface TableListItem {
   id: number;
   name: string;
   number: number;
-  contract_id: number;
+  contract_id: string;
   power: string;
   count: number;
-  usdt_fee: number;
-  btc_fee: number;
-  ttc_fee: number;
-  got_usdt: number;
-  got_btc: number;
-  got_ttc: number;
-  got_point: number;
   status: number;
   machine_status: number;
   created_at: number;

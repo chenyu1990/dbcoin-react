@@ -31,12 +31,6 @@ export default [
             icon: 'profile',
             routes: [
               {
-                name: '矿机计划',
-                icon: 'audit',
-                path: '/contract/plan',
-                component: './contract/plan',
-              },
-              {
                 name: '售卖合约',
                 icon: 'unordered-list',
                 path: '/contract/list',
@@ -72,12 +66,6 @@ export default [
                 icon: 'solution',
                 path: '/member/profile',
                 component: './user/profile',
-              },
-              {
-                name: '等级配置',
-                icon: 'menu',
-                path: '/member/level',
-                component: './user/level',
               },
             ],
           },

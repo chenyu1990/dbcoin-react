@@ -90,22 +90,6 @@ class TableList extends Component {
       dataIndex: 'usdt_fee',
     },
     {
-      title: '获得TTC',
-      dataIndex: 'got_ttc',
-    },
-    {
-      title: '获得积分',
-      dataIndex: 'got_point',
-    },
-    {
-      title: '合约状态',
-      dataIndex: 'status',
-
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
-    },
-    {
       title: '购买时间',
       dataIndex: 'created_at_utc',
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,

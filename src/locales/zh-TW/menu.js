@@ -48,4 +48,9 @@ export default {
   'menu.editor.flow': '流程編輯器',
   'menu.editor.mind': '腦圖編輯器',
   'menu.editor.koni': '拓撲編輯器',
+  'menu.demo': '演示數據',
+  'menu.user': '用戶',
+  'menu.system': '系統配置',
+  'menu.system.menu': '菜單管理',
+  'menu.system.role': '角色管理',
 };
