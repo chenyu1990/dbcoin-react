@@ -1,0 +1,38 @@
+stages:
+  - deploy
+  - release
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+#    - yarn.lock
+
+before_script:
+  - export PATH=$HOME/.yarn/bin:$PATH
+
+docker-deploy:
+  stage: deploy
+  # 执行Job内容
+  script:
+    - yarn install
+    - umi build
+    - \cp -rf dist/* /var/go/ttcoin-server-golang/admin/
+  tags:
+    # 执行 Job 的服务器
+    - UAT-nginx-deploy
+  only:
+    - master
+
+docker-release:
+  stage: release
+  # 执行Job内容
+  script:
+    - yarn install
+    - umi build
+    - \cp -rf dist/* /data/go/ttcoin-server-golang/admin/
+  tags:
+    # 执行 Job 的服务器
+    - ttcoin-server
+  only:
+    - release
