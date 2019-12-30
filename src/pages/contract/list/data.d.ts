@@ -4,7 +4,7 @@ export interface TableListItem {
   summary: string;
   total: number;
   sold: number;
-  power: number;
+  price: number;
   content: string;
   sale_time_bgn: Date;
   sale_time_end: Date;

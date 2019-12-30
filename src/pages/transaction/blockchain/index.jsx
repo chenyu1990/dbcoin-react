@@ -14,8 +14,8 @@ const getValue = obj =>
 const statusMap = ['processing', 'success'];
 const status = ['未到账', '已到账'];
 
-const coinTypeColor = ['', '#f69736', '#179f76'];
-const coinType = ['', 'BTC', 'USDT'];
+const coinTypeColor = ['', '#179f76', '#121212'];
+const coinType = ['', 'USDT', 'ETH'];
 const categoryColor = ['', 'blue', 'gold', 'orange', 'magenta', 'lime'];
 const category = ['', 'send', 'receive', 'generate', 'immature', 'orphan'];
 

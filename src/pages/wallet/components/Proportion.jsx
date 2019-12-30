@@ -26,7 +26,7 @@ const Proportion = ({
           <div className={styles.salesTypeRadio}>
             <Radio.Group value={type} onChange={handleChangeType}>
               <Radio.Button value="usdt">USDT</Radio.Button>
-              <Radio.Button value="btc">BTC</Radio.Button>
+              <Radio.Button value="eth">ETH</Radio.Button>
             </Radio.Group>
           </div>
         </div>

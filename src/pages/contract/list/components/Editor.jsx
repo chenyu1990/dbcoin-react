@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import { Form, Input, Modal, DatePicker, Select, InputNumber } from 'antd';
-import { FormattedMessage, formatMessage } from 'umi-plugin-react/locale';
+import { formatMessage } from 'umi-plugin-react/locale';
+import moment from 'moment';
 
 @connect(user => ({
   user,
@@ -62,28 +63,41 @@ class Editor extends PureComponent {
         bodyStyle={{ maxHeight: 'calc( 100vh - 158px )', overflowY: 'auto' }}
       >
         <Form>
-          <Form.Item {...this.formItemLayout} label={formatMessage({
-            id: 'contract.field.coin_type',
-          })}>
-            {getFieldDecorator('coin_type', {
-              rules: [
-                {
-                  required: formType === 'A',
-                  message: formatMessage({ id: 'component.placeholder.content' }, {
-                    content: formatMessage({
-                      id: 'contract.field.coin_type',
+          {formType === 'A' ? (
+            <Form.Item {...this.formItemLayout} label={formatMessage({
+              id: 'contract.field.coin_type',
+            })}>
+              {getFieldDecorator('coin_type', {
+                rules: [
+                  {
+                    required: true,
+                    message: formatMessage({ id: 'component.placeholder.content' }, {
+                      content: formatMessage({
+                        id: 'contract.field.coin_type',
+                      }),
                     }),
-                  }),
-                },
-              ],
-            })(<Select style={{ width: '100%' }}>
+                  },
+                ],
+              })(<Select style={{ width: '100%' }}>
+                  <Select.Option value={1}>USDT</Select.Option>
+                  <Select.Option value={2}>ETH</Select.Option>
+                </Select>)}
+            </Form.Item>
+          ) : (
+            <Form.Item {...this.formItemLayout} label={formatMessage({
+              id: 'contract.field.coin_type',
+            })}>
+              <Select style={{ width: '100%' }} defaultValue={values.coin_type}>
                 <Select.Option value={1}>USDT</Select.Option>
-              </Select>)}
-          </Form.Item>
+                <Select.Option value={2}>ETH</Select.Option>
+              </Select>
+            </Form.Item>
+          )}
           <Form.Item {...this.formItemLayout} label={formatMessage({
             id: 'contract.field.name',
           })}>
             {getFieldDecorator('name', {
+              initialValue: formType === 'A' ? null : values.name,
               rules: [
                 {
                   required: formType === 'A',
@@ -105,15 +119,6 @@ class Editor extends PureComponent {
           })}>
             {getFieldDecorator('dividend_ratio', {
               initialValue: formType === 'A' ? null : values.dividend_ratio,
-              rules: [
-                {
-                  message: formatMessage({ id: 'component.placeholder.content' }, {
-                    content: formatMessage({
-                      id: 'contract.field.dividend_ratio',
-                    }),
-                  }),
-                },
-              ],
             })(<InputNumber min={0} step={100} max={99999999} style={{ width: '100%' }} />)}
           </Form.Item>
           <Form.Item {...this.formItemLayout} label={formatMessage({
@@ -121,22 +126,13 @@ class Editor extends PureComponent {
           })}>
             {getFieldDecorator('price', {
               initialValue: formType === 'A' ? null : values.price,
-              rules: [
-                {
-                  message: formatMessage({ id: 'component.placeholder.content' }, {
-                    content: formatMessage({
-                      id: 'contract.field.price',
-                    }),
-                  }),
-                },
-              ],
-            })(<InputNumber min={100} step={100} max={99999999} style={{ width: '100%' }} />)}
+            })(<InputNumber min={0} step={100} max={99999999} style={{ width: '100%' }} />)}
           </Form.Item>
           <Form.Item {...this.formItemLayout} label={formatMessage({
             id: 'contract.field.sale_time_bgn',
           })}>
             {getFieldDecorator('sale_time_bgn', {
-              initialValue: formType === 'A' ? null : values.sale_time_bgn,
+              initialValue: formType === 'A' ? null : moment(values.sale_time_bgn),
               rules: [
                 {
                   required: true,

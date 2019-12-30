@@ -26,7 +26,7 @@ export async function get(params) {
 }
 
 export async function update(params) {
-  return request(`${API.CONTRACT.MAIN}/${params.id}`, {
+  return request(`${API.CONTRACT.MAIN}/${params.contract_id}`, {
     method: 'PUT',
     data: params,
   });

@@ -32,8 +32,8 @@ const getValue = obj =>
 const statusMap = ['error', 'processing', 'default'];
 const status = ['未知状态', '正常', '售罄'];
 
-const coinTypeColor = ['', '#179f76', '#f69736'];
-const coinType = ['', 'USDT(omni)', 'BTC'];
+const coinTypeColor = ['', '#179f76', '#121212'];
+const coinType = ['', 'USDT(omni)', 'ETH'];
 
 /* eslint react/no-multi-comp:0 */
 @connect(({ contract, loading }) => ({
@@ -100,6 +100,14 @@ class TableList extends Component {
       },
     },
     {
+      title: '期数',
+      dataIndex: 'period',
+    },
+    {
+      title: '价格',
+      dataIndex: 'price',
+    },
+    {
       title: '分红状态',
       dataIndex: 'dividend_status',
 
@@ -128,16 +136,6 @@ class TableList extends Component {
             <Col>止：{moment(record.sale_time_end).format('YYYY-MM-DD HH:mm:ss')}</Col>
           </Row>
         );
-      },
-    },
-    {
-      title: '操作',
-      render: (text, record) => {
-        return record.sold !== record.total ? (
-          <Fragment>
-            <a onClick={() => this.handleUpdateModalVisible(true, record)}>配置</a>
-          </Fragment>
-        ) : null;
       },
     },
   ];
