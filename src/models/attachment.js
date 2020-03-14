@@ -7,6 +7,7 @@ const Model = {
   },
   effects: {
     *fetch({ payload, callback }, { call, put }) {
+      console.log('debug fetch fuck')
       const { response, data } = yield call(query, payload);
       if (response.status === 200) {
         yield put({
@@ -44,10 +45,11 @@ const Model = {
       state.data[related_id].list.unshift(data);
       return state;
     },
-    save(state, action) {
+    save(state, { payload }) {
+      console.log('debug save', payload);
       return {
         ...state,
-        data: { ...state.data, ...action.payload },
+        data: { ...state.data, ...payload },
       };
     },
   },

@@ -13,7 +13,7 @@ const mediaTypeMap = ['MEDIA', 'IMAGE', 'VIDEO', 'AUDIO'];
 @connect(({ article, attachment, loading }) => ({
   article,
   attachment,
-  loading: loading.models.article,
+  loading: loading.models.article || loading.models.attachment,
 }))
 export default class ArticleDetail extends React.Component {
   state = {
@@ -45,7 +45,7 @@ export default class ArticleDetail extends React.Component {
             uid: '1',
             name: `媒体：${article.media}`,
             status: 'done',
-            url: `${API.DATA.ATTACHMENT}/${article.media}`,
+            url: article.media.indexOf('http') === -1 ? `${API.DATA.ATTACHMENT}/${article.media}` : article.media,
           });
         }
         if (article.image) {
@@ -53,7 +53,7 @@ export default class ArticleDetail extends React.Component {
             uid: '2',
             name: `图片：${article.image}`,
             status: 'done',
-            url: `${API.DATA.ATTACHMENT}/${article.image}`,
+            url: article.image.indexOf('http') === -1 ? `${API.DATA.ATTACHMENT}/${article.image}` : article.image,
           });
         }
         if (article.thumb) {
@@ -61,38 +61,39 @@ export default class ArticleDetail extends React.Component {
             uid: '3',
             name: `缩略图：${article.thumb}`,
             status: 'done',
-            url: `${API.DATA.ATTACHMENT}/${article.thumb}`,
+            url: article.thumb.indexOf('http') === -1 ? `${API.DATA.ATTACHMENT}/${article.thumb}` : article.thumb,
           });
         }
+
         this.setState({
           article,
           fileList,
           editorState: BraftEditor.createEditorState(article.content),
-        });
-
-        dispatch({
-          type: 'attachment/fetch',
-          payload: {
-            related_id: article.id,
-          },
-          callback: response => {
-            if (response.status === 200) {
-              const {
-                attachment: {
-                  data: { [article.id]: items },
-                },
-              } = this.props;
-              const { mediaItems } = this.state;
-              items.map(item => {
-                mediaItems.push({
-                  id: item.id,
-                  type: mediaTypeMap[item.type],
-                  url: `${API.DATA.ATTACHMENT}/${item.image}`,
+        }, () => {
+          dispatch({
+            type: 'attachment/fetch',
+            payload: {
+              related_id: article.article_id,
+            },
+            callback: response => {
+              if (response.status === 200) {
+                const {
+                  attachment: {
+                    data: { [article.article_id]: items },
+                  },
+                } = this.props;
+                const { mediaItems } = this.state;
+                items.map(item => {
+                  mediaItems.push({
+                    id: item.attach_id,
+                    type: mediaTypeMap[item.type],
+                    url: `${API.DATA.ATTACHMENT}/${item.image}`,
+                  });
                 });
-              });
-              this.setState({ mediaItems });
-            }
-          },
+                this.setState({ mediaItems });
+              }
+            },
+          });
         });
       },
     });
@@ -132,18 +133,18 @@ export default class ArticleDetail extends React.Component {
   fileUpload = ({ file, progress, success, error }) => {
     const { dispatch } = this.props;
     const {
-      article: { id },
+      article: { article_id },
     } = this.state;
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('related_id', id);
+    formData.append('related_id', article_id);
     dispatch({
       type: 'attachment/add',
       payload: formData,
       callback: ({ response, data }) => {
         if (response.status === 200) {
           success({
-            id: data.id,
+            id: data.attach_id,
             type: mediaTypeMap[data.type],
             url: `${API.DATA.ATTACHMENT}/${data.image}`,
           });
@@ -192,7 +193,12 @@ export default class ArticleDetail extends React.Component {
 
   render() {
     const {
-      article: { id, title },
+      match: {
+        params: { id },
+      },
+    } = this.props;
+    const {
+      article: { title },
       fileList,
       editorState,
       mediaItems,

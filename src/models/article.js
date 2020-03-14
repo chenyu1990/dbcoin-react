@@ -90,7 +90,7 @@ const Model = {
     *edit({ payload }, { put }) {
       yield put(
         routerRedux.push({
-          pathname: `article/${payload.id}`,
+          pathname: `article/${payload.article_id}`,
         }),
       );
     },

@@ -2,7 +2,7 @@ const { NODE_ENV } = process.env;
 
 let BASE_URL;
 if (NODE_ENV === 'development') {
-  BASE_URL = 'http://127.0.0.1:10088';
+  BASE_URL = 'http://192.168.1.4:10088';
 } else {
   const { origin } = window.location;
   BASE_URL = origin;
